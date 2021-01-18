@@ -1,15 +1,47 @@
-h1 {
-  color: red;
-}
+@import "../../node_modules/uikit/src/scss/variables-theme.scss";
+@import "../../node_modules/uikit/src/scss/mixins-theme.scss";
+@import "../../node_modules/uikit/src/scss/uikit-theme.scss";
 
-h2 {
-  color: blue;
-}
+$panel_height: 64px;
 
 iframe {
   position: absolute;
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - #{$panel_height});
   left: 0;
-  top: 0; 
+  top: $panel_height; 
+}
+
+.panel {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px;
+  height: $panel_height;
+  box-sizing: border-box;
+  border-bottom: 1px solid #000;
+}
+
+.loader {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba($color: #000000, $alpha: 0.3);
+  visibility: hidden;
+  opacity: 0;
+  transition: .4s all ease-in-out;
+
+  &.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  span {
+    color: #fff;
+    fill: #fff;
+  }
 }

@@ -8,10 +8,10 @@ module.exports = class Editor {
     this.iframe = document.querySelector('iframe')
   }
 
-  open(page) {
+  open(page, cb) {
     this.currentPage = page;
 
-    axios.get('../' + page)
+    axios.get('../' + page + '?rnd=' + Math.random())
       .then(res => DOMHelper.parseStrToDom(res.data))
       .then(DOMHelper.wrapTextNodes)
       .then(dom => {
@@ -23,6 +23,7 @@ module.exports = class Editor {
       .then(() => this.iframe.load("../temp.html"))
       .then(() => this.enableEditing())
       .then(() => this.injectStyles())
+      .then(cb)
   }
 
   enableEditing() {
@@ -50,11 +51,13 @@ module.exports = class Editor {
 
   
 
-  save() {
+  save(onSuccess, onError) {
     const newDom = this.virtualDom.cloneNode(this.virtualDom)
 
     DOMHelper.unwrapTextNodes(newDom)
     const html = DOMHelper.serializeDomToString(newDom)
     axios.post("./api/savePage.php", { pageName: this.currentPage, "html": html})
+      .then(onSuccess)
+      .catch(onError)
   }
 }
