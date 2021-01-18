@@ -9,7 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.5.1"
+    "axios": "^0.21.1",
+    "jquery": "^3.5.1",
+    "vue": "^2.6.12"
+  },
+  "browser": {
+    "vue": "vue/dist/vue.common.js"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

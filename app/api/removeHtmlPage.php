@@ -1,4 +1,6 @@
 <?php
+$_POST = json_decode(file_get_contents('php://input'), true);
+
 $page = "../../" . $_POST["page"];
 
 if (file_exists($page)) {

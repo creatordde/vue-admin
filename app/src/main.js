@@ -1,34 +1,29 @@
-const $ = require('jquery')
+const Vue = require('vue')
+const axios = require('axios')
 
-function getPagesList() {
-  $(".pages h1").remove();
-  $.get("./api", (data) => {
-    data.forEach(el => {
-      $(".pages").append("<h1>" + el + "</h1>")
-    });
-    $(".pages h1").click(deletePage)
-  }, "JSON")
-}
-
-getPagesList();
-
-$("button").click(() => {
-  $.post("./api/createNewHtmlPage.php", {
-    "name": $("input").val()
-  }, (data) => {
-    getPagesList();
-    console.log(data)
-  })
-  .fail(() => {
-    alert("Page exsist!")
-  })
+new Vue({
+  el: "#app",
+  data: {
+    "pageList": [],
+    "newPageName": "",
+  },
+  methods: {
+    createPage() {
+      axios.post('./api/createNewHtmlPage.php',  { "name": this.newPageName })
+        .then(() => this.updatePageList())
+    },
+    updatePageList() {
+      axios.get('./api/',)
+        .then(response => {
+          this.pageList = response.data;
+        })
+    },
+    deletePage(page) {
+      axios.post('./api/removeHtmlPage.php', { "page": page })
+        .then(() => this.updatePageList())
+    }
+  },
+  created() { 
+    this.updatePageList();
+  }
 })
-
-function deletePage(e) {
-  $.post("./api/removeHtmlPage.php", {
-    "page": e.target.innerText
-  }, (data) => {
-    getPagesList();
-    console.log(data)
-  })
-}

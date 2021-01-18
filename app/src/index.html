@@ -7,9 +7,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <input type="text" />
-  <button>Create page</button>
-  <div class="pages"></div>
+  <div id="app">
+    <input type="text" v-model="newPageName" />
+    <button v-on:click="createPage">Create page</button>
+    <div v-for="(page, index) in pageList" :key="index">
+      <h1>{{ page }} <a href="#" v-on:click="deletePage(page)">X</a></h1>
+    </div>
+  </div>
   <script src="bundle.js"></script>
 </body>
 </html>
