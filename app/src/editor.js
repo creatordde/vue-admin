@@ -1,5 +1,6 @@
 const axios = require('axios')
 const DOMHelper = require('./dom-helper')
+const EditorText = require('./editor-text')
 require("./iframe-load")
 
 module.exports = class Editor {
@@ -21,21 +22,33 @@ module.exports = class Editor {
       .then((html) => axios.post('./api/saveTempPage.php', { html }))
       .then(() => this.iframe.load("../temp.html"))
       .then(() => this.enableEditing())
+      .then(() => this.injectStyles())
   }
 
   enableEditing() {
     this.iframe.contentDocument.body.querySelectorAll("text-editor").forEach(el => {
-      el.contentEditable = "true"
-      el.addEventListener("input", () => {
-        this.onTextEdit(el)
-      })
+      const id = el.getAttribute("nodeid")
+      const virtualEl = this.virtualDom.body.querySelector(`[nodeid="${id}"]`)
+      new EditorText(el, virtualEl)
     })
   }
 
-  onTextEdit(el) {
-    const id = el.getAttribute("nodeid")
-    this.virtualDom.body.querySelector(`[nodeid="${id}"]`).innerHTML = el.innerHTML
+  injectStyles() {
+    const style = this.iframe.contentDocument.createElement("style")
+    style.innerHTML = `
+      text-editor:hover {
+        outline: 3px solid orange;
+        outline-offset: 8px;
+      }
+      text-editor:focus {
+        outline: 3px solid red;
+        outline-offset: 8px;
+      }
+    `
+    this.iframe.contentDocument.head.appendChild(style) 
   }
+
+  
 
   save() {
     const newDom = this.virtualDom.cloneNode(this.virtualDom)
